@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Render de ilustrações</title>
+<link rel="stylesheet" href="../fonts/fonts.css">
+<style>html,body{margin:0;background:transparent;} canvas{display:block;}</style>
+</head>
+<body>
+<script src="three.r128.min.js"></script>
+<script src="kit.js"></script>
+<script src="shots.js"></script>
+<script>
+/* Uso: render.html#nome-da-ilustracao. Expõe window.renderShot() -> {dataURL, w, h, markers} */
+window.renderShot = async function (name) {
+  await document.fonts.load('600 40px Fredoka'); await document.fonts.load('700 40px Fredoka');
+  var def = window.SHOTS[name]; if (!def) throw new Error('shot desconhecido: ' + name);
+  var W = def.w || 900, H = def.h || 900, DPR = window.devicePixelRatio || 1;
+  var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+  renderer.setPixelRatio(DPR); renderer.setSize(W, H);
+  renderer.setClearColor(0x000000, 0);
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  document.body.appendChild(renderer.domElement);
+  var scene = new THREE.Scene();
+  var kit = makeKit({ seed: def.seed || 7, rimStr: def.rimStr });
+  var content = new THREE.Group(); scene.add(content);
+  var out = def.build(kit, content, scene) || {};
+  if (def.outline !== false) kit.addOutlines(content, def.outline || 0.011, def.outlineColor || 0x4a2f2c);
+
+  /* luz de ilustração: céu quente, sol dourado de frente-esquerda, recorte por trás */
+  scene.add(new THREE.HemisphereLight(0xfff3df, 0x9a7a6a, def.hemi || 0.78));
+  var key = new THREE.DirectionalLight(0xffe6bf, def.key || 0.95);
+  var az = (def.az == null ? 25 : def.az) * Math.PI / 180, el = (def.el == null ? 14 : def.el) * Math.PI / 180;
+  key.position.set(-4 + Math.sin(az) * 3, 7, 5 + Math.cos(az) * 2); key.castShadow = true;
+  key.shadow.mapSize.set(2048, 2048); key.shadow.bias = -0.0008; key.shadow.normalBias = 0.02; key.shadow.radius = 4;
+  scene.add(key); scene.add(key.target);
+  var fill = new THREE.DirectionalLight(0xfff0e0, 0.35); fill.position.set(5, 3, 6); scene.add(fill);
+  var back = new THREE.DirectionalLight(0xffd59a, 0.45); back.position.set(2, 4, -6); scene.add(back);
+
+  /* caixa do conteúdo */
+  content.updateMatrixWorld(true);
+  var box = new THREE.Box3();
+  content.traverse(function (o) { if (o.isMesh && !o.userData.isOutline) { o.geometry.computeBoundingBox(); var b = o.geometry.boundingBox.clone().applyMatrix4(o.matrixWorld); box.union(b); } });
+  var ctr = box.getCenter(new THREE.Vector3()), size = box.getSize(new THREE.Vector3());
+  var sc = key.shadow.camera, rad = size.length() * 0.75 + 1;
+  sc.left = -rad; sc.right = rad; sc.top = rad; sc.bottom = -rad; sc.near = 0.1; sc.far = 40;
+  key.target.position.copy(ctr); key.position.add(ctr);
+  if (def.ground !== false) {
+    var gp = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.ShadowMaterial({ opacity: def.shadow || 0.2 }));
+    gp.rotation.x = -Math.PI / 2; gp.position.y = def.groundY || 0.001; gp.receiveShadow = true; gp.userData.isOutline = true; scene.add(gp);
+  }
+
+  /* câmera ortográfica: visão quase frontal (personagens) ou isométrica (mapa) */
+  var cam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 200);
+  var dir = new THREE.Vector3(Math.sin(az) * Math.cos(el), Math.sin(el), Math.cos(az) * Math.cos(el));
+  cam.position.copy(ctr).addScaledVector(dir, 50); cam.lookAt(ctr); cam.updateMatrixWorld(true);
+  var pts = [], inv = cam.matrixWorldInverse;
+  for (var i = 0; i < 8; i++) pts.push(new THREE.Vector3(i & 1 ? box.max.x : box.min.x, i & 2 ? box.max.y : box.min.y, i & 4 ? box.max.z : box.min.z).applyMatrix4(inv));
+  var minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  pts.forEach(function (p) { minX = Math.min(minX, p.x); maxX = Math.max(maxX, p.x); minY = Math.min(minY, p.y); maxY = Math.max(maxY, p.y); });
+  var pad = def.pad || 0.06, cx = (minX + maxX) / 2, cy = (minY + maxY) / 2, hw = (maxX - minX) / 2 * (1 + pad), hh = (maxY - minY) / 2 * (1 + pad);
+  if (hw / hh > W / H) hh = hw * H / W; else hw = hh * W / H;
+  cam.left = cx - hw; cam.right = cx + hw; cam.top = cy + hh; cam.bottom = cy - hh; cam.updateProjectionMatrix();
+  renderer.render(scene, cam);
+
+  /* recorte pelo alfa */
+  var cv = renderer.domElement, c2 = document.createElement('canvas'); c2.width = cv.width; c2.height = cv.height;
+  var g2 = c2.getContext('2d'); g2.drawImage(cv, 0, 0);
+  var d = g2.getImageData(0, 0, c2.width, c2.height).data, x0 = c2.width, y0 = c2.height, x1 = 0, y1 = 0;
+  for (var y = 0; y < c2.height; y++) for (var x = 0; x < c2.width; x++) { if (d[(y * c2.width + x) * 4 + 3] > 6) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; } }
+  var m = Math.round(6 * DPR); x0 = Math.max(0, x0 - m); y0 = Math.max(0, y0 - m); x1 = Math.min(c2.width - 1, x1 + m); y1 = Math.min(c2.height - 1, y1 + m);
+  var cw = x1 - x0 + 1, chh = y1 - y0 + 1, c3 = document.createElement('canvas'); c3.width = cw; c3.height = chh;
+  c3.getContext('2d').drawImage(c2, x0, y0, cw, chh, 0, 0, cw, chh);
+  var markers = (out.markers || []).map(function (mk) {
+    var v = mk.pos.clone().project(cam);
+    var px = (v.x + 1) / 2 * c2.width - x0, py = (1 - v.y) / 2 * c2.height - y0;
+    return { id: mk.id, x: px / cw, y: py / chh };
+  });
+  var touches = { left: x0 <= 0, top: y0 <= 0, right: x1 >= c2.width - 1, bottom: y1 >= c2.height - 1 };
+  return { dataURL: c3.toDataURL('image/png'), w: cw, h: chh, markers: markers, touches: touches };
+};
+</script>
+</body>
+</html>
