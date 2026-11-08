@@ -41,89 +41,71 @@ Faixa própria, mais simples, feita para jogar no colo do pai ou da mãe.
 - **Teste:** a criança lê em voz alta e a IA confere a pronúncia. Não há chefão difícil, só celebração do progresso.
 - **Apostila:** caderno de traçado e leitura para fazer junto com o responsável.
 
-## 4. Trilhas (mundos do mapa)
+## 4. Trilhas
 
-Cada trilha é uma região do mapa, com seus mentores e chefões. Os nomes abaixo dizem só o assunto. Os nomes de aventura de cada região serão criados junto com a arte e a história do jogo.
+São 16 trilhas. Cada uma é uma região do mapa e vai do básico ao avançado, num caminho longo. Quem quiser mergulhar a fundo pode chegar a um nível próximo do universitário. Os nomes de aventura de cada região serão criados junto com a arte.
 
-### 4.1 Emoções e caráter
-- Nomear emoções, autocontrole, lidar com frustração, perdão.
-- Disciplina, hábitos, gestão do tempo, foco, terminar o que começa.
-- Ética do trabalho, resiliência, honestidade sob pressão.
-- **Missão real:** manter uma rotina por 7 dias, com quadro validado pelo responsável.
-- **Chefão:** a IA apresenta situações difíceis por voz e a criança responde o que faria e por quê.
+O detalhamento de cada trilha está nos arquivos da pasta [`trilhas/`](trilhas/): skills, níveis, missões e chefões de cada nível, referências por faixa etária e a lista "Evitar ou usar com cautela".
 
-### 4.2 Comunicação, oratória e retórica
-- Escrita clara, leitura com compreensão, argumentação.
-- Falar em público, contar histórias, ouvir bem.
-- Retórica: reconhecer argumentos fortes e fracos.
-- **Missão real:** apresentar um tema à família por 2 minutos.
-- **Chefão:** discurso por voz, avaliado pela IA em clareza, estrutura e postura.
+| # | Trilha | Detalhe |
+|---|---|---|
+| 1 | Alfabetização e leitura (3–7 anos) | [A](trilhas/A-teologia-carater-relacionamentos-alfabetizacao.md) |
+| 2 | Teologia e valores cristãos (estrutura de Wayne Grudem) | [A](trilhas/A-teologia-carater-relacionamentos-alfabetizacao.md) |
+| 3 | Emoções, caráter e virtudes | [A](trilhas/A-teologia-carater-relacionamentos-alfabetizacao.md) |
+| 4 | Relacionamentos e convivência | [A](trilhas/A-teologia-carater-relacionamentos-alfabetizacao.md) |
+| 5 | Filosofia, lógica e pensamento crítico | [B](trilhas/B-filosofia-comunicacao-historia-geografia.md) |
+| 6 | Comunicação, oratória, retórica e escrita | [B](trilhas/B-filosofia-comunicacao-historia-geografia.md) |
+| 7 | História, civismo, artes e música | [B](trilhas/B-filosofia-comunicacao-historia-geografia.md) |
+| 8 | Inglês | [B](trilhas/B-filosofia-comunicacao-historia-geografia.md) |
+| 9 | Geografia e culturas do mundo | [B](trilhas/B-filosofia-comunicacao-historia-geografia.md) |
+| 10 | Matemática | [C](trilhas/C-matematica-ciencias-engenharia-tecnologia.md) |
+| 11 | Ciências naturais | [C](trilhas/C-matematica-ciencias-engenharia-tecnologia.md) |
+| 12 | Engenharia: civil, mecânica, eletrônica e robótica, software | [C](trilhas/C-matematica-ciencias-engenharia-tecnologia.md) |
+| 13 | Tecnologia e IA com responsabilidade | [C](trilhas/C-matematica-ciencias-engenharia-tecnologia.md) |
+| 14 | Empreendedorismo | [D](trilhas/D-empreendedorismo-financas-vida-pratica.md) |
+| 15 | Finanças pessoais | [D](trilhas/D-empreendedorismo-financas-vida-pratica.md) |
+| 16 | Vida prática e saúde | [D](trilhas/D-empreendedorismo-financas-vida-pratica.md) |
 
-### 4.3 Relacionamentos e convivência
-- Amizade, respeito, resolução de conflitos, família.
-- Trabalho em equipe e liderança servidora.
-- Generosidade e serviço à família, aos vizinhos e à igreja.
-- **Missão real:** um ato de serviço planejado e executado.
-- **Chefão:** mediar um conflito entre personagens do jogo.
+### 4.1 Filosofia, lógica e pensamento crítico
 
-### 4.4 Engenharia: civil, mecânica e software
-- Civil: estruturas, materiais, medidas, plantas simples.
-- Mecânica: alavancas, engrenagens, polias, energia.
-- Software: lógica, algoritmos, programação por blocos e depois em texto.
-- Robótica e eletrônica básica.
-- **Missão real:** construir uma ponte de palitos que aguente um peso definido.
-- **Chefão:** projeto no jogo que precisa funcionar de verdade na simulação física.
+Trilha própria, mais ampla do que "detectar notícia falsa". Ensina a pensar com clareza, buscar a verdade e agir com sabedoria, a partir da tradição clássica e cristã.
 
-### 4.5 Empreendedorismo
-- Vendas, marketing, contabilidade básica, processos e projetos, finanças da empresa.
-- **Missão real:** vender algo feito pela criança, com custo, preço e lucro registrados.
-- **Chefão:** pitch por voz para um "investidor" da IA, mais as contas do negócio.
+- **Base:** Sócrates, Aristóteles, Agostinho, Tomás de Aquino, Pascal, C.S. Lewis, Chesterton, Mortimer Adler, Peter Kreeft, Dorothy Sayers (trivium), Alvin Plantinga, Nancy Pearcey.
+- **Skills:** perguntar e definir, lógica formal, lógica informal e falácias, epistemologia, ética e virtudes, cosmovisão, método científico e filosofia da ciência, resolução de problemas (Pólya), pensamento sistêmico, tomada de decisão.
+- **Caminho:** começa com "fato ou opinião?" aos 6 anos e chega à leitura direta dos clássicos e à defesa de tese no nível mais alto.
 
-### 4.6 Finanças pessoais
-- Ganhar, poupar, doar, gastar com sabedoria; juros; orçamento; dívida.
-- **Missão real:** montar e seguir o orçamento da mesada por um mês.
-- **Chefão:** administrar a economia de uma vila no jogo durante uma crise.
+### 4.2 Teologia
 
-### 4.7 Lógica, matemática e ciências
-- Matemática aplicada a problemas reais.
-- Método científico: hipótese, experimento, registro.
-- Pensamento crítico: golpes, notícias falsas, propaganda enganosa.
-- **Missão real:** um experimento caseiro com relatório.
-- **Chefão:** desvendar um mistério com pistas que exigem lógica e evidências.
+- Ligada por padrão. O responsável pode desativar no painel.
+- A Bíblia é soberana. A espinha dorsal segue as 7 partes da Teologia Sistemática de Wayne Grudem: Palavra de Deus, Deus, Homem, Cristo e Espírito Santo, Redenção, Igreja e Últimas Coisas.
+- Começa com histórias bíblicas e catecismo e chega a ensaio e defesa oral de doutrinas.
 
-### 4.8 Tecnologia e IA com responsabilidade
-- Usar IA para aprender, sabendo pedir e conferir a resposta, sem terceirizar o pensamento.
-- Segurança digital: senhas, privacidade, aliciamento, vício em tela.
-- **Missão real:** configurar com o responsável a segurança dos aparelhos da casa.
-- **Chefão:** identificar as armadilhas em uma série de mensagens e sites falsos.
+### 4.3 Escala de níveis
 
-### 4.9 Vida prática e saúde
-- Cozinhar, pequenos consertos, horta, organização da casa.
-- Saúde: primeiros socorros, nutrição, sono, atividade física.
-- Orientação e sobrevivência: mapas, bússola, acampamento.
-- **Missão real:** preparar uma refeição para a família.
-- **Chefão:** expedição de sobrevivência no jogo com recursos limitados.
+As pesquisas usaram escalas um pouco diferentes. A proposta é unificar assim, ajustando cada trilha na aprovação:
 
-### 4.10 História, civismo e cultura
-- História do Brasil e do mundo, como funciona o governo, leis, impostos, direitos e deveres.
-- Inglês com conversa por voz com a IA.
-- Música e artes: criatividade, beleza, ofício.
-- **Missão real:** entrevistar um avô ou avó sobre como era o país na infância deles.
-- **Chefão:** conselho da cidade, em que a criança defende uma proposta com fatos.
+| Nível | Idade mínima sugerida | Faixa |
+|---|---|---|
+| 0 | 3 | Primeiros Passos |
+| 1 | 6 | Aprendiz |
+| 2 | 8 | Aprendiz |
+| 3 | 10 | Explorador |
+| 4 | 12 | Explorador |
+| 5 | 14 | Mestre |
+| 6 | 15 | Mestre (aprofundamento) |
+| 7 | 16 | Mestre (aprofundamento, quase universitário) |
 
-### 4.11 Geografia e culturas do mundo
-- Continentes, países, relevo, clima, mapas e orientação.
-- Povos e culturas: comidas, costumes, idiomas, arquitetura, história das missões cristãs.
-- Recursos naturais e cuidado com a criação.
-- Conteúdo sempre dentro da política de conteúdo (seção 8).
-- **Missão real:** preparar com a família um prato típico de outro país e apresentar o país.
-- **Chefão:** expedição ao redor do mundo no jogo, em que cada parada exige saber geografia e costumes locais.
+A idade é só uma sugestão. A criança pode ficar mais tempo num nível, e um jovem que começa tarde pode subir rápido.
 
-### 4.12 Valores cristãos e teologia sistemática
-- Ligado por padrão. O responsável pode desativar no painel.
-- Histórias bíblicas, virtudes, doutrinas principais em linguagem adequada à idade.
-- **Missão real:** memorizar e explicar um texto bíblico à família.
-- **Chefão:** responder por voz perguntas sobre o que aprendeu, com as próprias palavras.
+### 4.4 Skills e XP
+
+- **Skill:** cada trilha tem de 5 a 11 skills, por exemplo "lógica formal" ou "orçamento". Cada skill tem o próprio XP e o próprio nível.
+- **De onde vem o XP:** exercícios dão pouco, missões no mundo real dão médio e chefões dão muito. Só ganha XP o que foi comprovado.
+- **Nível da trilha:** para enfrentar o chefão do nível seguinte, todas as skills da trilha precisam ter chegado a esse nível.
+- **XP total:** a soma do XP de todas as skills de todas as trilhas. O perfil mostra um gráfico com a força do jogador em cada área.
+- **Sem teto:** quem quiser ir além pode seguir até o nível 7 em qualquer trilha e continuar ganhando XP.
+- **Distintivos:** bronze, prata e ouro por skill, inspirados nas especialidades dos Escoteiros e dos Desbravadores.
+- **Revisão:** de tempos em tempos a IA volta a testar o que já foi aprendido, para o conhecimento não se perder.
 
 ## 5. Teste de interesse e aprofundamento
 
@@ -185,7 +167,26 @@ Toda conta de criança pertence a uma conta familiar controlada por um responsá
 - **IA tutora com limites:** segue a política de conteúdo (seção 8).
 - **Tempo de tela:** limites configuráveis e incentivo às missões fora da tela.
 
-## 11. Ideias em aberto
+## 11. Cronograma de aprovação
+
+Cada bloco é aprovado em duas partes: a **base** (skills, níveis até o 5, missões, chefões e referências) e o **aprofundamento** (níveis 6 e 7). Proposta de um bloco por semana:
+
+| Semana | Início | Bloco | Status |
+|---|---|---|---|
+| 0 | 09/11/2026 | Estilo visual e modelo de skills e XP | Em análise |
+| 1 | 16/11/2026 | Teologia · Emoções e caráter | Pendente |
+| 2 | 23/11/2026 | Relacionamentos · Filosofia e lógica | Pendente |
+| 3 | 30/11/2026 | Alfabetização · Comunicação e escrita | Pendente |
+| 4 | 07/12/2026 | Matemática · Ciências naturais | Pendente |
+| 5 | 14/12/2026 | Engenharia (4 subtrilhas) | Pendente |
+| 6 | 11/01/2027 | Tecnologia e IA · Finanças pessoais | Pendente |
+| 7 | 18/01/2027 | Empreendedorismo · Vida prática e saúde | Pendente |
+| 8 | 25/01/2027 | História, civismo e artes · Inglês | Pendente |
+| 9 | 01/02/2027 | Geografia e culturas · Teste de interesse · Revisão geral | Pendente |
+
+Em cada bloco também conferimos as referências marcadas como "a verificar" e as que não têm edição em português.
+
+## 12. Ideias em aberto
 
 _Novas ideias entram aqui antes de serem distribuídas nas trilhas._
 
