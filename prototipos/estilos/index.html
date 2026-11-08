@@ -94,7 +94,7 @@ body.full .fsnav { display: block; }
   <header>
     <span class="eyebrow">KidsSchooling · Direção de arte</span>
     <h1>Estilos em movimento</h1>
-    <p class="lede">A mesma cena em 14 estilos: o herói chega à vila, o Mestre Tomé dá uma dica e a ponte é consertada. Toque em <b>Tela cheia</b> para ver como fica no celular.</p>
+    <p class="lede">A mesma cena em 15 estilos: o herói chega à vila, o Mestre Tomé dá uma dica e a ponte é consertada. Toque em <b>Tela cheia</b> para ver como fica no celular.</p>
   </header>
 
   <nav class="chips" id="chips" role="tablist" aria-label="Estilos"></nav>
@@ -135,6 +135,7 @@ body.full .fsnav { display: block; }
 <script src="scenes/hd2d.js"></script>
 <script src="scenes/pixel3d.js"></script>
 <script src="scenes/voxelart.js"></script>
+<script src="scenes/combinado.js"></script>
 <script>
 (function () {
   var STYLES = [
@@ -151,7 +152,8 @@ body.full .fsnav { display: block; }
     ['flat', 'Flat 2D (vetorial)', 'Formas geométricas e cores chapadas, visual de app educativo.'],
     ['hd2d', 'HD-2D', 'Personagens em pixel art dentro de um cenário 3D com luz e desfoque de maquete.'],
     ['pixel3d', '3D pixelado', 'Mundo 3D de verdade exibido em baixa resolução, com cara de pixel art.'],
-    ['voxelart', 'Voxel art detalhado', 'Pixel art esculpida em cubinhos minúsculos, como uma maquete de pixels.']
+    ['voxelart', 'Voxel art detalhado', 'Pixel art esculpida em cubinhos minúsculos, como uma maquete de pixels.'],
+    ['combinado', '★ Combinado (recomendado)', 'Mundo em cartoon 3D com câmera alta, construção com blocos de encaixe próprios e interface em ilustração 2D com mapa isométrico. É o vencedor da pesquisa.']
   ];
   var SCENES = window.SCENES || {};
   var chips = document.getElementById('chips');
@@ -197,7 +199,7 @@ body.full .fsnav { display: block; }
   function fromHash() {
     var h = location.hash.slice(1);
     var i = STYLES.findIndex(function (s) { return s[0] === h; });
-    return i < 0 ? 0 : i;
+    return i < 0 ? STYLES.length - 1 : i;
   }
 
   function enterFull() {
