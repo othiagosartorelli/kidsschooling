@@ -173,7 +173,7 @@ Cada bloco é aprovado em duas partes: a **base** (skills, níveis até o 5, mis
 
 | Semana | Início | Bloco | Status |
 |---|---|---|---|
-| 0 | 09/11/2026 | Estilo visual e modelo de skills e XP | Em análise |
+| 0 | 09/11/2026 | Estilo visual e modelo de skills e XP | Em análise. Semifinalistas: Peças de montar, Cartoon 3D, Pixel art 2D, Isométrico |
 | 1 | 16/11/2026 | Teologia · Emoções e caráter | Pendente |
 | 2 | 23/11/2026 | Relacionamentos · Filosofia e lógica | Pendente |
 | 3 | 30/11/2026 | Alfabetização · Comunicação e escrita | Pendente |
