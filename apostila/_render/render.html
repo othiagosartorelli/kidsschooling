@@ -25,22 +25,28 @@ window.renderShot = async function (name) {
   var kit = makeKit({ seed: def.seed || 7, rimStr: def.rimStr });
   var content = new THREE.Group(); scene.add(content);
   var out = def.build(kit, content, scene) || {};
-  if (def.outline !== false) kit.addOutlines(content, def.outline || 0.011, def.outlineColor || 0x4a2f2c);
+  if (def.outline !== false) kit.addOutlines(content, def.outline || 0.0085, def.outlineColor || 0x4a2f2c);
 
   /* luz de ilustração: céu quente, sol dourado de frente-esquerda, recorte por trás */
-  scene.add(new THREE.HemisphereLight(0xfff3df, 0x9a7a6a, def.hemi || 0.78));
-  var key = new THREE.DirectionalLight(0xffe6bf, def.key || 0.95);
+  scene.add(new THREE.HemisphereLight(0xfff3df, 0x9a7a6a, def.hemi || 0.58));
+  var key = new THREE.DirectionalLight(0xffe6bf, def.key || 0.82);
   var az = (def.az == null ? 25 : def.az) * Math.PI / 180, el = (def.el == null ? 14 : def.el) * Math.PI / 180;
-  key.position.set(-4 + Math.sin(az) * 3, 7, 5 + Math.cos(az) * 2); key.castShadow = true;
+  key.position.set(-2.2 + Math.sin(az) * 2, 9, 3.2 + Math.cos(az) * 1.5); key.castShadow = true;
   key.shadow.mapSize.set(2048, 2048); key.shadow.bias = -0.0008; key.shadow.normalBias = 0.02; key.shadow.radius = 4;
   scene.add(key); scene.add(key.target);
-  var fill = new THREE.DirectionalLight(0xfff0e0, 0.35); fill.position.set(5, 3, 6); scene.add(fill);
-  var back = new THREE.DirectionalLight(0xffd59a, 0.45); back.position.set(2, 4, -6); scene.add(back);
+  var fill = new THREE.DirectionalLight(0xfff0e0, 0.25); fill.position.set(5, 3, 6); scene.add(fill);
+  var back = new THREE.DirectionalLight(0xffd59a, 0.35); back.position.set(2, 4, -6); scene.add(back);
 
   /* caixa do conteúdo */
   content.updateMatrixWorld(true);
   var box = new THREE.Box3();
   content.traverse(function (o) { if (o.isMesh && !o.userData.isOutline) { o.geometry.computeBoundingBox(); var b = o.geometry.boundingBox.clone().applyMatrix4(o.matrixWorld); box.union(b); } });
+  if (out.fit) box = out.fit;
+  if (def.ground !== false && !out.fit) {
+    var ld = key.position.clone().normalize(), hgt = box.max.y;
+    var sb = new THREE.Box3(new THREE.Vector3(box.min.x - hgt * ld.x / ld.y, 0, box.min.z - hgt * ld.z / ld.y), new THREE.Vector3(box.max.x - hgt * ld.x / ld.y, 0, box.max.z - hgt * ld.z / ld.y));
+    box.union(sb);
+  }
   var ctr = box.getCenter(new THREE.Vector3()), size = box.getSize(new THREE.Vector3());
   var sc = key.shadow.camera, rad = size.length() * 0.75 + 1;
   sc.left = -rad; sc.right = rad; sc.top = rad; sc.bottom = -rad; sc.near = 0.1; sc.far = 40;

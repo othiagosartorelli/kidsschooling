@@ -10,7 +10,7 @@
   window.makeKit = function (opts) {
     opts = opts || {};
     var R = rng(opts.seed || 20261115);
-    var rimU = { uRimColor: { value: new THREE.Color(opts.rimColor || 0xffd9a0) }, uRimStr: { value: opts.rimStr == null ? 0.42 : opts.rimStr } };
+    var rimU = { uRimColor: { value: new THREE.Color(opts.rimColor || 0xffd9a0) }, uRimStr: { value: opts.rimStr == null ? 0.3 : opts.rimStr } };
     function addRim(m) {
       m.onBeforeCompile = function (sh) {
         sh.uniforms.uRimColor = rimU.uRimColor; sh.uniforms.uRimStr = rimU.uRimStr;
@@ -443,8 +443,12 @@
       var H = 0.62, Rr = 0.27;
       // moedas dentro (empilhadas e um pouco tortas)
       var n = nCoins == null ? 5 : nCoins;
-      for (var i = 0; i < n; i++) { var c = coin({ r: 0.13, th: 0.035 }); c.position.set((i % 2 ? 0.05 : -0.05) + (R() - 0.5) * 0.04, 0.05 + i * 0.045, (R() - 0.5) * 0.06); c.rotation.set((R() - 0.5) * 0.25, R() * 6, (R() - 0.5) * 0.25); c.traverse(function (o) { o.userData.noOutline = true; }); g.add(c); }
-      var glassM = addRim(new THREE.MeshStandardMaterial({ color: 0xcfeefa, roughness: 0.08, metalness: 0, transparent: true, opacity: 0.32, depthWrite: false, side: THREE.DoubleSide }));
+      for (var i = 0; i < n; i++) { var c = coin({ r: 0.13, th: 0.035 }); c.position.set((i % 2 ? 0.035 : -0.035) + (R() - 0.5) * 0.03, 0.035 + i * 0.038, 0.02 + (R() - 0.5) * 0.04); c.rotation.set((R() - 0.5) * 0.12, R() * 6, (R() - 0.5) * 0.12); c.traverse(function (o) { o.userData.noOutline = true; }); g.add(c); }
+      var glassM = new THREE.ShaderMaterial({
+        transparent: true, depthWrite: false, side: THREE.DoubleSide,
+        vertexShader: 'varying vec3 vN; varying vec3 vV; void main(){ vec4 mv = modelViewMatrix*vec4(position,1.0); vN = normalize(normalMatrix*normal); vV = normalize(-mv.xyz); gl_Position = projectionMatrix*mv; }',
+        fragmentShader: 'varying vec3 vN; varying vec3 vV; void main(){ float f = 1.0 - abs(dot(normalize(vN), normalize(vV))); f = pow(f, 2.2); vec3 c = mix(vec3(0.86,0.95,1.0), vec3(0.42,0.66,0.78), f); gl_FragColor = vec4(c, 0.10 + 0.75*f); }'
+      });
       var body = new THREE.Mesh(G('jarb', function () {
         var pts = [], sh = [[0, 0], [Rr - 0.06, 0], [Rr, 0.05], [Rr, H - 0.12], [Rr - 0.05, H - 0.04], [Rr - 0.06, H]];
         // curva suave
@@ -463,14 +467,14 @@
       var shine = noOut(mesh(gCyl, new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.75 }), 0.018, 0.34, 0.018, -Rr * 0.72, 0.3, Rr * 0.68, g, true)); shine.renderOrder = 3;
       var shine2 = noOut(mesh(gCyl, new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.6 }), 0.012, 0.1, 0.012, -Rr * 0.6, 0.53, Rr * 0.78, g, true)); shine2.renderOrder = 3;
       // tampa
-      var lid = mesh(G('lid', function () { return new THREE.CylinderGeometry(1, 1, 1, 40); }), M(new THREE.Color(J.lid).getHex(), { roughness: 0.5 }), Rr - 0.02, 0.1, Rr - 0.02, 0, H + 0.05, 0, g);
+      var lid = mesh(G('lid', function () { return new THREE.CylinderGeometry(1, 1, 1, 40); }), M(new THREE.Color(J.lid).getHex(), { roughness: 0.55 }), Rr - 0.015, 0.075, Rr - 0.015, 0, H + 0.04, 0, g);
       mesh(G('lidr', function () { return new THREE.TorusGeometry(1, 0.06, 8, 40); }), M(new THREE.Color(J.lid2).getHex(), { roughness: 0.5 }), Rr - 0.02, Rr - 0.02, 1.2, 0, H + 0.01, 0, g).rotation.x = Math.PI / 2;
       // fenda da moeda
-      noOut(block(0.14, 0.02, 0.035, 0x3a2a2a, 0, H + 0.1, 0, 0, g, 0.008));
+      noOut(block(0.14, 0.02, 0.035, 0x3a2a2a, 0, H + 0.075, 0, 0, g, 0.008));
       // pino hexagonal da tampa (marca dos blocos)
       // rótulo (cartão creme na frente, levemente curvo)
-      var lbl = new THREE.Mesh(G('lbl', function () { return new THREE.CylinderGeometry(Rr + 0.004, Rr + 0.004, 0.3, 30, 1, true, -0.72, 1.44); }), new THREE.MeshStandardMaterial({ map: labelTex(k), transparent: true, roughness: 0.7, side: THREE.FrontSide }));
-      lbl.position.y = 0.28; lbl.renderOrder = 4; lbl.userData.noOutline = true; g.add(lbl);
+      var lbl = new THREE.Mesh(G('lbl', function () { return new THREE.CylinderGeometry(Rr + 0.004, Rr + 0.004, 0.25, 30, 1, true, -0.62, 1.24); }), new THREE.MeshBasicMaterial({ map: labelTex(k), transparent: true, side: THREE.FrontSide }));
+      lbl.position.y = 0.43; lbl.renderOrder = 4; lbl.userData.noOutline = true; g.add(lbl);
       return g;
     }
 
