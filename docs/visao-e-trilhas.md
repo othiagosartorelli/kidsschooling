@@ -166,7 +166,8 @@ Toda conta de criança pertence a uma conta familiar controlada por um responsá
 
 - O jogador sempre age como herói do bem. Sem violência gratuita.
 - **Fora do conteúdo:** qualquer tema sexual, ideologia de gênero e pautas político-ideológicas contrárias à família.
-- Temas sensíveis que surgirem (por exemplo, numa pergunta da criança) não são discutidos pela IA. Ela responde de forma simples e encaminha a conversa ao responsável, que é avisado no painel.
+- **Não existe nenhum conteúdo, botão, missão ou tela sobre temas sensíveis.** Nada no jogo leva a criança até eles.
+- O único caso previsto é a criança, por conta própria, perguntar algo à IA (falando ou escrevendo), porque ouviu na escola, na rua ou na internet. Nesse caso a IA não explica o tema. Ela responde algo como "essa é uma ótima pergunta para conversar com seu pai ou sua mãe", volta para a aventura e avisa o responsável no painel.
 - Geografia, história e culturas são ensinadas com fatos e respeito, sem entrar em temas polêmicos.
 - Todo conteúdo novo passa por revisão de uma equipe de curadoria antes de entrar no jogo.
 
