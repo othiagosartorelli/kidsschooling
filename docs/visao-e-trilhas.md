@@ -173,7 +173,7 @@ Cada bloco é aprovado em duas partes: a **base** (skills, níveis até o 5, mis
 
 | Semana | Início | Bloco | Status |
 |---|---|---|---|
-| 0 | 09/11/2026 | Estilo visual e modelo de skills e XP | Em análise. Semifinalistas: Peças de montar, Cartoon 3D, Pixel art 2D, Isométrico |
+| 0 | 09/11/2026 | Estilo visual e modelo de skills e XP | Estilo **aprovado**: combinado (ver seção 12). Modelo de XP em análise |
 | 1 | 16/11/2026 | Teologia · Emoções e caráter | Pendente |
 | 2 | 23/11/2026 | Relacionamentos · Filosofia e lógica | Pendente |
 | 3 | 30/11/2026 | Alfabetização · Comunicação e escrita | Pendente |
@@ -186,7 +186,22 @@ Cada bloco é aprovado em duas partes: a **base** (skills, níveis até o 5, mis
 
 Em cada bloco também conferimos as referências marcadas como "a verificar" e as que não têm edição em português.
 
-## 12. Ideias em aberto
+## 12. Direção de arte (aprovada)
+
+Estilo **combinado**, escolhido com base na pesquisa em [`reports/Estilo gráfico para todas as idades.md`](../reports/Estilo%20gráfico%20para%20todas%20as%20idades.md) e no protótipo em [`prototipos/estilos/`](../prototipos/estilos/).
+
+- **Mundo:** cartoon 3D estilizado, com proporções de animação de cinema (nada de visual de bebê), para agradar de 3 a 17 anos e os pais.
+- **Construção:** blocos de encaixe com desenho próprio (pinos hexagonais baixos e travas laterais em forma de borboleta). Nunca imitar LEGO: nada de pino cilíndrico, minifigura ou o nome LEGO.
+- **Interface e apostila:** ilustração 2D limpa, tirada dos próprios modelos 3D. Mapas em visão isométrica.
+- **Câmera por momento:**
+  - **Exploração:** alta e fixa, quase isométrica.
+  - **Diálogo:** aproxima dos personagens.
+  - **Construção:** zoom na bancada, com grade técnica.
+  - **Chefão:** câmera baixa e dramática.
+- **Cores por momento:** cada região tem a sua paleta, e a luz muda com a hora do dia e com o tipo de exercício (mercado dourado, caverna noturna, amanhecer no santuário, entardecer no chefão). Primeiros Passos (3 a 5 anos) usa cores mais vivas, câmera mais perto e botões só com ícones.
+- **Próximo passo:** contratar ilustrador ou estúdio para a arte final, a partir dos protótipos. Antes do lançamento, validar os pontos jurídicos com um advogado de propriedade intelectual.
+
+## 13. Ideias em aberto
 
 _Novas ideias entram aqui antes de serem distribuídas nas trilhas._
 
