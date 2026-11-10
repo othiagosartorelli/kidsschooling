@@ -493,6 +493,7 @@ A idade é só uma sugestão. Um jovem que chega aos 13 anos sem base começa no
 
 **Como ler a tabela**
 - "Exercícios" = (XP do nível − missões − bônus do chefão anterior) ÷ 10.
+- **Nível 0 fecha rápido** (3 a 5 semanas) para uma fase que vai dos 3 aos 5 anos. Proposta: a criança repete o nível 0 em ciclos com histórias e brincadeiras novas (continua ganhando XP, sem teto), e o chefão do nível 1 só abre a partir dos 6 anos ou com liberação do responsável.
 - O número de exercícios por sessão cai nos níveis altos porque os exercícios ficam mais longos (ensaio, prova lógica, diálogo).
 - As semanas consideram **3 a 4 sessões por semana só nesta trilha**. Como a criança faz várias trilhas ao mesmo tempo, o tempo real de calendário depende de quantas trilhas ela tem ativas. Exemplo: com 2 sessões de Filosofia por semana, o nível 3 leva de 33 a 44 semanas (cerca de um ano letivo).
 - Nos níveis 6 e 7 a escrita do ensaio e a preparação da defesa contam como exercícios (cada etapa revisada pela IA vale 10 XP), o que explica o volume maior.

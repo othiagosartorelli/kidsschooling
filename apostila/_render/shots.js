@@ -19,6 +19,11 @@
     L.arms[1].rotation.set(-1.25, 0, 0.55); L.arms[0].rotation.set(-0.3, 0, -0.2);
     L.head.rotation.set(-0.05, -0.25, 0.06); smile(L, 1.4);
   } };
+  S['lia-aponta-esq'] = { w: 800, h: 900, az: -10, el: 10, build: function (k, g) {
+    var L = face(k.makeLia(), -0.55); g.add(L.root);
+    L.arms[0].rotation.set(-1.25, 0, -0.55); L.arms[1].rotation.set(-0.3, 0, 0.2);
+    L.head.rotation.set(-0.05, 0.25, -0.06); smile(L, 1.4);
+  } };
   S['lia-coracao'] = { w: 700, h: 900, az: 15, el: 10, build: function (k, g) {
     var L = face(k.makeLia(), 0.1); g.add(L.root);
     L.arms[0].rotation.set(-1.25, 0, -0.14 + 0.85); L.arms[1].rotation.set(-0.7, 0, 0.6);
@@ -70,7 +75,7 @@
   S['potes-trio'] = { w: 1100, h: 600, az: 0, el: 12, build: function (k, g) {
     [0, 1, 2].forEach(function (i) { var j = k.jar(i, [2, 6, 4][i]); j.position.x = (i - 1) * 0.72; g.add(j); });
   } };
-  S['potes-vazios'] = { w: 1100, h: 600, az: 0, el: 12, build: function (k, g) {
+  S['potes-vazios'] = { w: 1100, h: 600, az: 0, el: 12, ground: false, build: function (k, g) {
     [0, 1, 2].forEach(function (i) { var j = k.jar(i, 0); j.position.x = (i - 1) * 0.72; g.add(j); });
   } };
   S['moedas'] = { w: 800, h: 600, az: 20, el: 28, build: function (k, g) { g.add(k.coinPile()); } };
@@ -114,7 +119,7 @@
     var W = 13, D = 10, R = k.rng;
     // ilha de blocos: grama em cima, terra nas laterais, pinos hexagonais na borda
     k.block(W, 0.5, D, 0xc98d5a, 0, -0.27, 0, 0, g, 0.18);
-    k.block(W - 0.02, 0.14, D - 0.02, 0x86c25a, 0, -0.04, 0, 0, g, 0.07);
+    k.block(W - 0.02, 0.14, D - 0.02, 0x7db35a, 0, -0.04, 0, 0, g, 0.07);
     for (var x = -W / 2 + 0.5; x <= W / 2 - 0.4; x += 1.0) { k.pin(g, x, 0.03, D / 2 - 0.25, 0xb6dd85); k.pin(g, x, 0.03, -D / 2 + 0.25, 0xb6dd85); }
     for (var z = -D / 2 + 1.25; z <= D / 2 - 1.2; z += 1.0) { k.pin(g, W / 2 - 0.25, 0.03, z, 0xb6dd85); k.pin(g, -W / 2 + 0.25, 0.03, z, 0xb6dd85); }
     [-1, 1].forEach(function (s) { k.bow(g, s * (W / 2 + 0.01), -0.27, 1.5, s * Math.PI / 2, k.COL.TEAL, 1.6); k.bow(g, s * (W / 2 + 0.01), -0.27, -1.5, s * Math.PI / 2, k.COL.TEAL, 1.6); });
@@ -137,31 +142,31 @@
     // 1 limonada (trabalho)
     var ls = put(k.lemonStand(), -4.3, 2.55, 0.1, 1.25);
     var hero = k.makeHero(); hero.root.position.set(-4.3, 0.03, 1.85); hero.root.scale.setScalar(1.05); g.add(hero.root);
-    mk.push({ id: '1', pos: new THREE.Vector3(-4.3, 2.6, 2.4) });
+    mk.push({ id: '1', pos: new THREE.Vector3(-4.0, 1.75, 2.45) });
     // 2 barraca da Dona Lia (três potes)
     put(k.liaStall(), -1.0, 2.35, 0, 1.0);
     var lia = k.makeLia(); lia.root.position.set(-0.05, 0.03, 3.0); lia.root.rotation.y = -0.5; g.add(lia.root);
     lia.arms[1].rotation.set(-0.25, 0, 2.55);
-    mk.push({ id: '2', pos: new THREE.Vector3(-1.0, 2.9, 2.2) });
+    mk.push({ id: '2', pos: new THREE.Vector3(-1.0, 2.15, 2.3) });
     // 3 brinquedos x frutas (necessidade e desejo)
     put(k.toyStall(), 2.5, 2.3, -0.08, 1.0);
-    mk.push({ id: '3', pos: new THREE.Vector3(2.5, 2.9, 2.2) });
+    mk.push({ id: '3', pos: new THREE.Vector3(2.5, 2.15, 2.25) });
     // 4 esperar para comprar: pote grande de poupar num pedestal de blocos
     k.block(0.8, 0.5, 0.8, 0xfff1dc, 5.6, 0.28, 1.95, 0, g, 0.08); k.pin(g, 5.35, 0.53, 1.7, 0xf3e3cf); k.pin(g, 5.85, 0.53, 2.2, 0xf3e3cf);
     var jp = k.jar(1, 6); jp.position.set(5.6, 0.53, 1.95); jp.scale.setScalar(1.1); g.add(jp);
     var bench = new THREE.Group(); k.block(1.0, 0.1, 0.36, k.COL.WOOD3, 0, 0.36, 0, 0, bench, 0.04); [-0.4, 0.4].forEach(function (xx) { k.block(0.1, 0.32, 0.3, k.COL.BEAM, xx, 0.16, 0, 0, bench, 0.03); }); put(bench, 6.0, 0.6, -1.4);
-    mk.push({ id: '4', pos: new THREE.Vector3(5.6, 2.2, 1.95) });
+    mk.push({ id: '4', pos: new THREE.Vector3(5.6, 1.45, 1.95) });
     // 5 contar moedas: mesa de caixa com moedas
     var tb = new THREE.Group(); k.block(0.95, 0.5, 0.6, k.COL.WOOD2, 0, 0.25, 0, 0, tb, 0.05); k.block(1.05, 0.07, 0.7, k.COL.WOOD3, 0, 0.53, 0, 0, tb, 0.03);
     var cp = k.coinPile(); cp.scale.setScalar(0.55); cp.position.set(0, 0.57, 0); tb.add(cp); put(tb, 2.0, -0.45, 0.2);
     var b1 = put(k.barrel(), 2.85, -0.7); var b2 = put(k.barrel(), 1.1, -0.85);
-    mk.push({ id: '5', pos: new THREE.Vector3(2.0, 1.75, -0.45) });
+    mk.push({ id: '5', pos: new THREE.Vector3(2.0, 0.85, -0.45) });
     // missão: a casa da família
     put(k.house(0xffe6cc, 0xd9573b), -1.6, -1.25, 0.15, 1.0);
-    mk.push({ id: 'M', pos: new THREE.Vector3(-1.6, 2.8, -1.25) });
+    mk.push({ id: 'M', pos: new THREE.Vector3(-1.6, 2.05, -1.25) });
     // chefão: coreto
     put(k.gazebo(), -1.0, -3.55, 0, 1.0);
-    mk.push({ id: 'C', pos: new THREE.Vector3(-1.0, 2.75, -3.55) });
+    mk.push({ id: 'C', pos: new THREE.Vector3(-1.0, 2.15, -3.55) });
     // capelinha (doar), chafariz, árvores
     put(k.chapel(), 3.9, -3.1, -0.3, 0.95);
     put(k.fountain(), -4.4, 0.9, 0, 0.7);

@@ -196,6 +196,8 @@
       var sq = 1 + (bob - 0.5) * 0.08 * w + Math.sin(wall * 3.1) * 0.01;
       h.sq.scale.set(1 / Math.sqrt(sq), sq, 1 / Math.sqrt(sq));
       h.arms[0].rotation.z -= ch * (2.3 + Math.sin(wall * 20) * 0.15); h.arms[1].rotation.z += ch * (2.3 + Math.sin(wall * 20 + 1) * 0.15);
+      var wv = h.wave || 0;
+      if (wv) { h.arms[1].rotation.z += wv * (2.55 + Math.sin(wall * 9) * 0.35); h.arms[1].rotation.x -= wv * 0.25; h.head.rotation.z += wv * 0.08; }
       h.head.rotation.z = Math.sin(ph) * 0.05 * w + 0.08 * ch * Math.sin(wall * 9);
       h.mouth.scale.set(0.036 * (1 + ch * 0.35), 0.03 * (1 + ch * 1.4), 0.03);
       var bl = wall % 3.1, blink = bl < 0.12 ? Math.abs(Math.cos(bl / 0.12 * Math.PI)) : 1;
