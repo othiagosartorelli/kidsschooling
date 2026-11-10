@@ -257,7 +257,7 @@
     W.ghostFill = ghostFill; W.ghostLine = ghostLine;
 
     /* grade técnica (blueprint) em volta do vão — aparece no modo construção */
-    var gridU = { uR: { value: 3.2 }, uA: { value: 0 }, uC: { value: new THREE.Color(0x6fe6ff) } };
+    var gridU = { uR: { value: 3.2 }, uA: { value: 0 }, uC: { value: new THREE.Color(0x2f86ff) } };
     var gridMat = new THREE.ShaderMaterial({
       uniforms: gridU, transparent: true, depthWrite: false, extensions: { derivatives: true },
       vertexShader: 'varying vec3 vW; void main(){ vec4 w = modelMatrix * vec4(position,1.0); vW = w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }',
@@ -270,8 +270,8 @@
         '  float axis = (1.0 - min(abs(p.x) / fwidth(p.x) / 1.6, 1.0));',
         '  float a = max(max(minor, major), clamp(axis, 0.0, 1.0) * 0.9);',
         '  float fade = 1.0 - smoothstep(uR * 0.55, uR, d);',
-        '  float fill = 0.14 * (1.0 - smoothstep(0.0, uR, d));',
-        '  gl_FragColor = vec4(mix(uC, vec3(1.0), major * 0.25), (a * 0.8 + fill) * fade * uA);',
+        '  float fill = 0.22 * (1.0 - smoothstep(0.0, uR, d));',
+        '  gl_FragColor = vec4(mix(uC, vec3(1.0), major * 0.35), (a * 0.95 + fill) * fade * uA);',
         '}'
       ].join('\n')
     });

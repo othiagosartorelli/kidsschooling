@@ -5,6 +5,13 @@
   'use strict';
   var KS = window.KS, u = KS.u, clamp = u.clamp, sstep = u.sstep, lerp = u.lerp, el = KS.el, I = KS.icons, B = KS.BRIDGE;
 
+  /* sem three.js (sem internet) ou sem WebGL: mostra um aviso amigável em vez de uma tela vazia */
+  function fatal(msg) {
+    var ld = document.getElementById('loading');
+    if (ld) ld.querySelector('span').innerHTML = msg;
+  }
+  if (!window.THREE) { fatal('Não foi possível carregar o jogo. Verifique a internet e toque para tentar de novo.'); document.addEventListener('click', function () { location.reload(); }); return; }
+
   /* ================= dados da missão ================= */
   var SKILLS = [
     { code: 'ENG-EST', nome: 'Estruturas' },
@@ -47,7 +54,9 @@
   /* ================= renderer, cena e câmera ================= */
   var stage = document.getElementById('stage'), hudRoot = document.getElementById('hud');
   var Wd = stage.clientWidth || window.innerWidth, Hd = stage.clientHeight || window.innerHeight;
-  var renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+  var renderer;
+  try { renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' }); }
+  catch (e) { fatal('Este aparelho não conseguiu abrir os gráficos 3D (WebGL). Tente em outro navegador.'); return; }
   var cores = navigator.hardwareConcurrency || 4;
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, cores >= 6 ? 2 : 1.5));
   renderer.setSize(Wd, Hd, false);
@@ -86,7 +95,7 @@
   var tome = K.buildTome(); scene.add(tome.g);
   tome.g.position.copy(W.TOME_P); tome.baseRy = -0.35; tome.g.rotation.y = tome.baseRy;
   var TOME_WATCH = new THREE.Vector3(-1.25, 0, 2.75); // no chefão ele assiste de longe, fora do quadro
-  var TOME_BUILD = new THREE.Vector3(1.35, 0, 2.15); // na construção ele vai para a beira do rio, fora do caminho da câmera
+  var TOME_BUILD = new THREE.Vector3(2.5, 0, 2.3); // na construção ele vai para a beira do rio, fora do caminho da câmera
   var guard = K.buildGuardian(); scene.add(guard.g);
   guard.g.position.copy(W.GUARD_P); guard.g.scale.setScalar(0.68);
 
@@ -115,7 +124,9 @@
       o.renderOrder = 6;
     });
     s.anim = null;
+    s.mark = el('div', 'ks-slotmark ks-hide', '<i></i>', hudRoot);
   });
+  function slotScreenY(s) { return s.type === 'pilar' ? B.PIER_Y1 - 0.05 : s.pos.y + 0.05; }
 
   /* ================= paleta por momento (dia na vila × entardecer do chefão) ================= */
   var PAL = {
@@ -171,6 +182,8 @@
   var ta = ans.querySelector('textarea'), btnSend = ans.querySelector('.ks-send');
   var doneBar = el('div', 'ks-ans ks-card ks-out', '<button class="ks-go" data-b="rw" style="width:100%">Ver recompensas ' + I.arrow + '</button>', hudRoot);
   var toastEl = el('div', 'ks-toast', '', hudRoot);
+  // pausa flutuante para os momentos em que a barra de cima some (teste de carga e chefão)
+  var fpause = el('button', 'ks-pause ks-card ks-fpause ks-hide', I.pause, hudRoot); fpause.setAttribute('aria-label', 'Pausa');
   var titleEl = el('div', 'ks-title ks-hide', '', hudRoot);
   var modal = el('div', 'ks-modal ks-hide', '', hudRoot);
   var reward = el('div', 'ks-reward ks-hide', '', hudRoot);
@@ -179,7 +192,7 @@
   function setOut(e, out) { e.classList.toggle('ks-out', !!out); }
   function show(e, on) { e.classList.toggle('ks-hide', !on); }
   var toastT = 0;
-  function toast(msg, ms) { toastEl.innerHTML = msg; toastEl.classList.add('ks-on'); clearTimeout(toastT); toastT = setTimeout(function () { toastEl.classList.remove('ks-on'); }, ms || 2600); }
+  function toast(msg, ms) { toastEl.classList.toggle('ks-high', mode === 'boss' || mode === 'build'); toastEl.innerHTML = msg; toastEl.classList.add('ks-on'); clearTimeout(toastT); toastT = setTimeout(function () { toastEl.classList.remove('ks-on'); }, ms || 2600); }
 
   function refreshTop(flash) {
     elAva.innerHTML = KS.avatarSVG(save.hero.girl, save.hero.skin) + '<span class="ks-lv">' + (levelOf(totalXP()) + 1) + '</span>';
@@ -233,6 +246,8 @@
   /* ================= câmera por momento ================= */
   var AZ = 35 * Math.PI / 180, EL = 53 * Math.PI / 180;
   var BOSS_CAM = { px: 0.7, py: 0.95, pz: 6.6, tx: 0.1, ty: 1.75, tz: 0.6, sh: 0.07 };
+  var BUILD_CAM = { az: 24, el: 58, w: 3.7, sh: 0.09, tx: 0.05, tz: 0.05 };
+  var TEST_CAM = { az: -90, el: 20, w: 4.4, sh: 0.0, ty: 0.55 };
   var camPos = new THREE.Vector3(), camTgt = new THREE.Vector3(), wantPos = new THREE.Vector3(), wantTgt = new THREE.Vector3(), camFov = 30, wantFov = 30, camSpeed = 3;
   var camShift = 0, wantShift = 0; // desloca o enquadramento na tela (fração da altura; + = conteúdo desce)
   var shake = 0;
@@ -249,7 +264,10 @@
       camSpeed = 2; wantShift = -0.06;
     } else if (mode === 'explore') {
       wantFov = 30;
-      var tx = clamp(hp.x - Math.sin(AZ) * 0.6, -2.6, 2.6), tz = clamp(hp.z - Math.cos(AZ) * 0.6, -4.2, 7.0);
+      // antes da aula, o enquadramento puxa um pouco para o Mestre Tomé (o "!" fica sempre à vista)
+      var fx = hp.x, fz = hp.z;
+      if (!save.flags.lesson) { var tq = tome.g.position; fx = lerp(hp.x, tq.x, 0.4); fz = lerp(hp.z, tq.z, 0.4); }
+      var tx = clamp(fx - Math.sin(AZ) * 0.6, -2.6, 2.6), tz = clamp(fz - Math.cos(AZ) * 0.6, -4.2, 7.0);
       wantTgt.set(tx, 0, tz);
       orbitPos(wantTgt, AZ, EL, fitDist(6.2, 30), wantPos);
       camSpeed = 4; wantShift = 0.03;
@@ -262,14 +280,14 @@
       camSpeed = 2.6; wantShift = -0.2;
     } else if (mode === 'build') {
       wantFov = 30;
-      wantTgt.set(0.05, 0, 0.15);
-      orbitPos(wantTgt, 24 * Math.PI / 180, 58 * Math.PI / 180, fitDist(3.7, 30), wantPos);
-      camSpeed = 2.6; wantShift = 0.09;
+      wantTgt.set(BUILD_CAM.tx, 0, BUILD_CAM.tz);
+      orbitPos(wantTgt, BUILD_CAM.az * Math.PI / 180, BUILD_CAM.el * Math.PI / 180, fitDist(BUILD_CAM.w, 30), wantPos);
+      camSpeed = 2.6; wantShift = BUILD_CAM.sh;
     } else if (mode === 'test') {
       wantFov = 32;
-      wantTgt.set(0, 0.5, clamp(hp.z, -2.2, 2.2));
-      orbitPos(wantTgt, -58 * Math.PI / 180, 26 * Math.PI / 180, fitDist(5.2, 32), wantPos);
-      camSpeed = 3; wantShift = 0.04;
+      wantTgt.set(0, TEST_CAM.ty, clamp(hp.z, -2.2, 2.2));
+      orbitPos(wantTgt, TEST_CAM.az * Math.PI / 180, TEST_CAM.el * Math.PI / 180, fitDist(TEST_CAM.w, 32), wantPos);
+      camSpeed = 3; wantShift = TEST_CAM.sh;
     } else if (mode === 'awake' || mode === 'boss' || mode === 'reward') {
       // câmera baixa e dramática: atrás e ao lado do herói, olhando para cima, para o Guardião
       wantFov = 40;
@@ -376,6 +394,7 @@
     if (hero.g.position.distanceTo(DLG_SPOT) < 0.15) startLesson(); else walkTo(DLG_SPOT.x, DLG_SPOT.z, function () { if (mode === 'explore') startLesson(); });
   }
   var BRIDGE_SPOT = new THREE.Vector3(0, 0, 2.95);
+  var HERO_BUILD = new THREE.Vector3(-2.0, 0, 1.9); // onde o herói assiste à construção (fora da frente da câmera)
   function goToBridge() {
     if (mode !== 'explore') return;
     if (!save.flags.lesson) { toast('Primeiro fale com o <b>Mestre Tomé</b> (toque nele).'); KS.audio.play('err'); return; }
@@ -462,7 +481,7 @@
       KS.audio.play('tap');
       setOut(dlg, true);
       enterExplore();
-      if (!save.flags.built) setTimeout(function () { if (mode === 'explore') toast('Toque no martelo sobre a ponte ou em <b>Construir</b>.', 3200); }, 500);
+      if (!save.flags.built) setTimeout(function () { if (mode === 'explore') toast('Toque no ícone laranja sobre a ponte ou no botão <b>Construir</b>.', 3400); }, 500);
     } else if (b.dataset.d === 'gnext') {
       KS.audio.play('tap'); guardLine++; renderGuardIntro();
     }
@@ -492,7 +511,7 @@
   }
   function enterBuild() {
     mode = 'build'; hero.path = null; tool = null;
-    hero.g.position.copy(BRIDGE_SPOT); hero.faceTo = Math.PI;
+    hero.g.position.copy(HERO_BUILD); hero.faceTo = Math.atan2(-HERO_BUILD.x, -HERO_BUILD.z);
     setOut(btns, true); setOut(quest, true); setOut(top, true);
     setOut(chal, false); setOut(pal, false);
     W.grid.visible = true; bpv.style.opacity = 1;
@@ -501,7 +520,7 @@
     if (allPlaced()) showTip('A ponte está montada! Toque em <b>Testar carga</b>.', 'ks-good', 6000);
     else showTip('Escolha uma peça na barra de baixo e toque no encaixe azul certo. Comece pelo que <b>segura</b> a ponte!', null, 6500);
   }
-  function exitBuild() { KS.audio.play('tap'); enterExplore(); }
+  function exitBuild() { KS.audio.play('tap'); hero.g.position.copy(BRIDGE_SPOT); hero.faceTo = Math.PI; enterExplore(); }
   chal.querySelector('.ks-x').addEventListener('click', exitBuild);
   pal.addEventListener('click', function (e) {
     var b = e.target.closest('button'); if (!b || mode !== 'build') return;
@@ -618,13 +637,14 @@
     show(ban, true); frame.style.opacity = 1;
     renderQuestion();
     setOut(bq, false); setOut(ans, false);
-    ta.value = ''; btnSend.disabled = false;
+    ta.value = ''; btnSend.disabled = false; btnSend.innerHTML = 'Responder ' + I.arrow;
   }
   function renderQuestion(res) {
     var html = '<div class="ks-nm ks-guard">' + I.guard + 'Guardião da Ponte Antiga</div>';
     if (!res) {
       html += '<div class="ks-q">Explique com suas palavras: <b>por que a viga precisa de apoio dos dois lados?</b></div>';
     } else {
+      if (!res.aprovado) html += '<div class="ks-q ks-q-sm">Por que a viga precisa de apoio <b>dos dois lados</b>?</div>';
       html += '<div class="ks-fb ' + (res.aprovado ? 'ok' : 'no') + '" style="margin-top:0">' + (res.aprovado ? I.okc : I.hint) + '<span>' + res.mensagem + (res.dica ? '<br><span style="font-weight:600">' + res.dica + '</span>' : '') + '</span></div>' +
         '<div class="ks-rub">' + res.criterios.map(function (c) { return '<span class="' + (c.ok ? 'ok' : '') + '"><i>' + (c.ok ? '✓' : '') + '</i>' + c.rotulo + '</span>'; }).join('') + '</div>';
     }
@@ -659,6 +679,7 @@
       }, 600);
     } else {
       KS.audio.play('err');
+      btnSend.innerHTML = 'Tentar de novo ' + I.arrow;
       ta.focus();
     }
   });
@@ -703,6 +724,7 @@
 
   /* ---------- pausa ---------- */
   top.querySelector('.ks-pause').addEventListener('click', function () { KS.audio.play('tap'); openPause(); });
+  fpause.addEventListener('click', function () { KS.audio.play('tap'); openPause(); });
   function openPause() {
     paused = true;
     var v = Math.round(KS.audio.getVolume() * 100);
@@ -823,7 +845,7 @@
       var blocked = s.needs.some(function (id) { return !W.slots.some(function (o) { return o.id === id && o.placed; }); });
       var base = mode === 'build' ? (match ? 0.42 + 0.22 * pulse : blocked ? 0.12 : 0.2 + 0.1 * pulse) : 0.12 + 0.06 * pulse;
       if (s.flash) { s.flash = Math.max(0, s.flash - dt * 2.2); }
-      s.gmats.forEach(function (m) { m.opacity = base + (s.flash || 0) * 0.4; m.color.setHex(s.flash > 0.02 ? 0xff9a6a : match ? 0x9ff6ff : 0x7fe8ff); });
+      s.gmats.forEach(function (m) { m.opacity = Math.min(0.9, base * 1.25 + (s.flash || 0) * 0.45); m.color.setHex(s.flash > 0.02 ? 0xff8a4a : match ? 0x8ff3ff : blocked ? 0x6a9ad8 : 0x3f9bff); });
       s.ghost.visible = !s.placed && !s.anim && (mode === 'build' || (save.flags.lesson && !save.flags.built && mode === 'explore'));
       if (s.anim) {
         var a = s.anim; a.t += dt / 0.55;
@@ -879,7 +901,12 @@
     place(markTome, proj(tp.x, 2.25, tp.z), mode === 'explore' && !f2.lesson);
     place(markGap, proj(0, 0.95, 0.05), mode === 'explore' && f2.lesson && !f2.tested);
     place(markGuard, proj(0, 3.4, -4.4), mode === 'explore' && f2.tested && !f2.boss);
-    place(dim3d, proj(-1.2, 0.5, 0), mode === 'build');
+    show(fpause, mode === 'awake' || mode === 'boss');
+    place(dim3d, proj(-1.2, 0.5, 0), mode === 'build' && !save.flags.built);
+    W.slots.forEach(function (s) {
+      var free = !s.needs.some(function (id) { return !W.slots.some(function (o) { return o.id === id && o.placed; }); });
+      place(s.mark, proj(s.pos.x, slotScreenY(s), s.pos.z), mode === 'build' && !paused && tool === s.type && !s.placed && !s.anim && free);
+    });
     btnBuild.classList.toggle('ks-glow', mode === 'explore' && f2.lesson && !f2.tested && hero.g.position.distanceTo(BRIDGE_SPOT) < 2.4);
     btnBuild.classList.toggle('ks-dim', !f2.lesson || f2.tested);
 
@@ -903,22 +930,28 @@
 
   /* ganchos para testes automatizados (posições na tela; não altera o jogo) */
   window.KS_DEBUG = {
-    cam: BOSS_CAM,
+    cam: BOSS_CAM, buildCam: BUILD_CAM, testCam: TEST_CAM,
+    pos: function (name, x, z) { var v = name === 'tomeBuild' ? TOME_BUILD : name === 'heroBuild' ? HERO_BUILD : null; if (v) v.set(x, 0, z); if (name === 'heroBuild' && mode === 'build') hero.g.position.copy(HERO_BUILD); },
     jump: function (where) {
       if (where === 'boss' || where === 'awake') {
         save.flags = { lesson: true, built: true, tested: true, boss: false };
         W.slots.forEach(function (s) { save.placed[s.id] = true; });
         show(titleEl, false); applySaveToWorld(); refreshTop(); startAwakening();
         if (where === 'boss') { setOut(dlg, true); enterBoss(); }
+      } else if (where === 'build' || where === 'test') {
+        save.flags = { lesson: true, built: where === 'test', tested: false, boss: false };
+        if (where === 'test') W.slots.forEach(function (s) { save.placed[s.id] = true; });
+        show(titleEl, false); applySaveToWorld(); refreshTop(); enterExplore(); enterBuild();
+        if (where === 'test') startTest();
       }
     },
-    mode: function () { return mode; },
+    mode: function () { return mode; }, W: W,
     save: function () { return JSON.parse(JSON.stringify(save)); },
     hero: function () { var p = hero.g.position; return { x: p.x, z: p.z, moving: !!hero.path }; },
     screen: function (name) {
       if (name === 'tome') { var t = tome.g.position; return proj(t.x, 0.9, t.z); }
       if (name === 'gap') return proj(0, 0.2, 0);
-      if (name.indexOf('slot:') === 0) { var s = W.slots.filter(function (o) { return o.id === name.slice(5); })[0]; return proj(s.pos.x, s.type === 'pilar' ? B.PIER_Y1 - 0.05 : s.pos.y + 0.05, s.pos.z); }
+      if (name.indexOf('slot:') === 0) { var s = W.slots.filter(function (o) { return o.id === name.slice(5); })[0]; return proj(s.pos.x, slotScreenY(s), s.pos.z); }
       if (name.indexOf('ground:') === 0) { var q = name.slice(7).split(','); return proj(+q[0], W.heightAt(+q[0], +q[1]), +q[1]); }
       return null;
     }

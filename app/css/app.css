@@ -274,3 +274,18 @@ button:focus-visible, textarea:focus-visible, input:focus-visible { outline: 3px
 .ks-wait { margin-top: .55rem; display: inline-flex; align-items: center; gap: .35rem; padding: .3rem .6rem; border-radius: 99px; background: var(--cream2); font-weight: 800; font-size: .74rem; color: var(--muted); }
 .ks-wait i { width: .55rem; height: .55rem; border-radius: 50%; background: #ffb21a; }
 .ks-rw .ks-go { min-height: 3.3rem; }
+/* alvo pulsante sobre o encaixe que combina com a peça escolhida (modo construção) */
+.ks-slotmark { position: absolute; left: 0; top: 0; width: 0; height: 0; pointer-events: none !important; will-change: transform; }
+.ks-slotmark:before, .ks-slotmark:after { content: ""; position: absolute; left: -1.5rem; top: -1.5rem; width: 3rem; height: 3rem; border-radius: 50%; border: .22rem solid #ffd65a; box-shadow: 0 0 .6rem rgba(255,190,40,.8); animation: ksRing 1.2s ease-out infinite; }
+.ks-slotmark:after { animation-delay: .6s; }
+.ks-slotmark i { position: absolute; left: -.45rem; top: -.45rem; width: .9rem; height: .9rem; border-radius: 50%; background: #ffd65a; box-shadow: 0 0 0 .18rem #fff, 0 .15rem .4rem rgba(80,50,0,.4); }
+@keyframes ksRing { 0% { transform: scale(.45); opacity: 1; } 100% { transform: scale(1.35); opacity: 0; } }
+.ks-toast.ks-high { bottom: auto; top: 42%; }
+.ks-q.ks-q-sm { font-size: .92rem; margin: 0 0 .45rem; opacity: .85; }
+.ks-fpause { position: absolute; right: .75rem; top: var(--top); width: 2.75rem; height: 2.75rem; padding: 0; border-radius: 50%; background: var(--cream); }
+.ks-loading-in span { max-width: 18rem; padding: 0 1rem; text-align: center; line-height: 1.35; }
+/* telas largas (tablet deitado / computador): cartões centrados com largura de leitura */
+@media (min-width: 760px) {
+  .ks-top, .ks-dlg, .ks-chal, .ks-tip, .ks-pal, .ks-btns, .ks-bq, .ks-ans, .ks-load { left: 50%; right: auto; width: 36rem; margin-left: -18rem; }
+  .ks-quest { left: calc(50% - 18rem); }
+}
